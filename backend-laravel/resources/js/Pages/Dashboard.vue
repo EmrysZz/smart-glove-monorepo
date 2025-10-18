@@ -1,26 +1,34 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
+
+// Get the authenticated user from Inertia's page props
+const user = usePage().props.auth.user;
 
 const translations = ref([]);
 
+// This function now only fetches the initial list of translations
 const getTranslations = async () => {
     try {
         const response = await axios.get('/api/translations');
-        translations.value = response.data.data;
+        translations.value = response.data;
     } catch (error) {
         console.error('Failed to fetch translations:', error);
     }
 };
 
-// 'onMounted' runs when the component is first loaded.
 onMounted(() => {
-    // 1. Fetch the data immediately when the page loads.
+    // 1. Fetch the initial data when the page loads.
     getTranslations();
 
-    // 2. Then, set a timer to call getTranslations again every 5 seconds.
-    setInterval(getTranslations, 5000); // 5000 milliseconds = 5 seconds
+    // 2. Listen for new translations on the private WebSocket channel.
+    window.Echo.private('translations.' + user.id) // <-- This line is now correct
+        .listen('TranslationCreated', (e) => {
+            // Add the new translation to the top of the list in real-time
+            console.log('New Translation Received:', e);
+            translations.value.unshift(e);
+        });
 });
 </script>
 
@@ -29,7 +37,7 @@ onMounted(() => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Translation History</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Translation History (Real-Time)</h2>
         </template>
 
         <div class="py-12">
@@ -38,11 +46,11 @@ onMounted(() => {
                     <div class="p-6 text-gray-900">
 
                         <div v-if="translations.length === 0">
-                            You don't have any saved translations yet. Use Postman to add some!
+                            Listening for new translations...
                         </div>
 
                         <ul v-else class="space-y-4">
-                            <li v-for="translation in translations" :key="translation.id" class="border-b pb-2">
+                            <li v-for="translation in translations" :key="translation.id" class="border-b pb-2 animate-fade-in">
                                 <p class="text-lg font-medium">{{ translation.translated_text }}</p>
                                 <span class="text-sm text-gray-500">
                                     Received on: {{ new Date(translation.created_at).toLocaleString() }}

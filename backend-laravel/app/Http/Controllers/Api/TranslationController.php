@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\TranslationCreated;
 use App\Http\Controllers\Controller;
 use App\Models\Translation;
 use Illuminate\Http\Request;
@@ -15,10 +16,7 @@ class TranslationController extends Controller
     {
         $translations = $request->user()->translations()->latest()->get();
 
-        return response()->json([
-            'success' => true,
-            'data' => $translations,
-        ]);
+        return response()->json($translations);
     }
 
     /**
@@ -32,6 +30,8 @@ class TranslationController extends Controller
         ]);
 
         $translation = $request->user()->translations()->create($validated);
+
+        TranslationCreated::dispatch($translation);
 
         return response()->json([
             'success' => true,
