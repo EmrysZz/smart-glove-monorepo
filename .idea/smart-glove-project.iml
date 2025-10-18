@@ -125,6 +125,8 @@
       <excludeFolder url="file://$MODULE_DIR$/backend-laravel/vendor/vlucas/phpdotenv" />
       <excludeFolder url="file://$MODULE_DIR$/backend-laravel/vendor/voku/portable-ascii" />
       <excludeFolder url="file://$MODULE_DIR$/backend-laravel/vendor/webmozart/assert" />
+      <excludeFolder url="file://$MODULE_DIR$/backend-laravel/vendor/paragonie/sodium_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/backend-laravel/vendor/pusher/pusher-php-server" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
