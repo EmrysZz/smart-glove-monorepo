@@ -5,6 +5,8 @@ services:
       context: ./backend-laravel
       dockerfile: Dockerfile
     container_name: smart-glove-laravel
+    env_file:
+      - ./backend-laravel/.env.docker
     ports:
       - "8000:80" # Maps host port 8000 to the container's port 80
     volumes:
@@ -20,6 +22,9 @@ services:
       context: ./iot-service-python
       dockerfile: Dockerfile
     container_name: smart-glove-python
+    environment:
+      - LARAVEL_API_TOKEN=2|ip36zg5onrkXnVsag1gmDej2FjLUdXqMFx2C5U5vfc52bdd7
+      - LARAVEL_API_ENDPOINT=http://laravel_app:80/api/translations
     ports:
       - "8001:8000" # Maps host port 8001 to the container's port 8000
     volumes:

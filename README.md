@@ -36,7 +36,7 @@ This project is a full-stack monorepo for a real-time sign language translation 
     ```
 3.  Copy the environment file:
     ```bash
-    cp .env.example .env
+    cp .env.docker.example .env.docker
     ```
 4.  Generate an application key:
     ```bash

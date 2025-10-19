@@ -1,10 +1,12 @@
+import os
 from fastapi import FastAPI
 from pydantic import BaseModel
 import requests
 
 # --- Configuration ---
-LARAVEL_API_TOKEN = "1|kHxZx0PYdDfwQzb4ol17Dia5mAlQNLKo4OljfqfRc1cc5a28" # Make sure this is a fresh token!
-LARAVEL_API_ENDPOINT = "http://laravel_app:80/api/translations"
+# Read configuration from environment variables
+LARAVEL_API_TOKEN = os.getenv("LARAVEL_API_TOKEN", "your_default_fallback_token")
+LARAVEL_API_ENDPOINT = os.getenv("LARAVEL_API_ENDPOINT", "http://laravel_app:80/api/translations")
 # -------------------
 
 app = FastAPI()
