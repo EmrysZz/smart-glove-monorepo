@@ -1,0 +1,65 @@
+services:
+  # Laravel Application Service (Web Server)
+  laravel_app:
+    build:
+      context: ./backend-laravel
+      dockerfile: Dockerfile
+    container_name: smart-glove-laravel
+    ports:
+      - "8000:80" # Maps host port 8000 to the container's port 80
+    volumes:
+      - ./backend-laravel:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - smartglove-network
+
+  # Python FastAPI Service (IoT Service)
+  python_service:
+    build:
+      context: ./iot-service-python
+      dockerfile: Dockerfile
+    container_name: smart-glove-python
+    ports:
+      - "8001:8000" # Maps host port 8001 to the container's port 8000
+    volumes:
+      - ./iot-service-python:/app
+    networks:
+      - smartglove-network
+
+  # MySQL Database Service
+  db:
+    image: mysql:8.0
+    container_name: smart-glove-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: smart_glove_project
+      MYSQL_ROOT_PASSWORD: root # Use a more secure password in a real production environment
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - smartglove-network
+
+  # Soketi WebSocket Service
+  soketi:
+    image: quay.io/soketi/soketi:latest-16-alpine
+    container_name: smart-glove-soketi
+    environment:
+      SOKETI_DEBUG: "1"
+    ports:
+      - "6001:6001"
+      - "9601:9601"
+    networks:
+      - smartglove-network
+
+# Define the shared network for all services to communicate
+networks:
+  smartglove-network:
+    driver: bridge
+
+# Define the volume for persistent database storage
+volumes:
+  db-data:
+    driver: local

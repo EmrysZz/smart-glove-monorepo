@@ -3,8 +3,8 @@ from pydantic import BaseModel
 import requests
 
 # --- Configuration ---
-LARAVEL_API_TOKEN = "1|oQrSM4OLmqhpexyGTdyZWuCdEyq1zg2E0SsXlpZtcdeaf45f" # Make sure this is a fresh token!
-LARAVEL_API_ENDPOINT = "http://backend-laravel.test/api/translations"
+LARAVEL_API_TOKEN = "1|kHxZx0PYdDfwQzb4ol17Dia5mAlQNLKo4OljfqfRc1cc5a28" # Make sure this is a fresh token!
+LARAVEL_API_ENDPOINT = "http://laravel_app:80/api/translations"
 # -------------------
 
 app = FastAPI()

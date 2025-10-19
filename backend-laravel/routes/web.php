@@ -27,3 +27,14 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+// TEMPORARY ROUTE FOR API TESTING
+Route::get('/generate-token', function () {
+    if (!auth()->check()) {
+        return 'Please log in at /login first.';
+    }
+    $user = auth()->user();
+    $user->tokens()->delete(); // Deletes old tokens
+    $token = $user->createToken('docker-token')->plainTextToken;
+    return response()->json(['token' => $token]);
+});
